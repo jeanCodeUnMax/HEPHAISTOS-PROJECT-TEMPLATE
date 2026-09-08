@@ -2,7 +2,7 @@ id: T006
 title: Polish cyberpunk aesthetic and audio
 milestone: M01
 objective: Enhance visual and audio presentation to clearly convey cyberpunk theme and provide satisfying feedback.
-status: ACTIVE
+status: DONE
 depends_on:
   - T005
 subtasks:

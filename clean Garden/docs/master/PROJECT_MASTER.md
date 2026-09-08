@@ -13,8 +13,8 @@ ID: NONE
 None.
 
 ## TASK_ACTIVE
-ID: T006
-Polish cyberpunk aesthetic and audio
+ID: NONE
+No active task.
 
 ## SUCCESS_CRITERION
 Defined by PRD/task evidence rules.
@@ -23,7 +23,7 @@ Defined by PRD/task evidence rules.
 No conclusion recorded yet.
 
 ## NEXT_ACTION
-Execute T006.
+Review roadmap and activate the next admissible task.
 
 ## BACKLOG
 - Managed by project task graph / agent rules

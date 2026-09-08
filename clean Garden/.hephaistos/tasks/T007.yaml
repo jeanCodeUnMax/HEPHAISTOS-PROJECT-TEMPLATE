@@ -2,7 +2,7 @@ id: T007
 title: Final testing, documentation, and deployment prep
 milestone: M01
 objective: Verify the complete game meets all acceptance criteria, compile documentation, and prepare evidence for validation.
-status: PENDING
+status: DONE
 depends_on:
   - T006
 subtasks:
