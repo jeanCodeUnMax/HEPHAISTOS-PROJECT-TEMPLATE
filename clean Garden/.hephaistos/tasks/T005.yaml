@@ -2,7 +2,7 @@ id: T005
 title: Implement game states
 milestone: M01
 objective: Implement clear game states (start, play, game over, win) with appropriate UI and transitions.
-status: ACTIVE
+status: DONE
 depends_on:
   - T004
 subtasks:

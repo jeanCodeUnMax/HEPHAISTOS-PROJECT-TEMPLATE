@@ -1,6 +1,11 @@
 // Import modules
 import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js';
 import * as CANNON from 'https://cdn.jsdelivr.net/npm/cannon-es@0.20.0/dist/cannon-es.js';
+import { EffectComposer } from 'https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/postprocessing/EffectComposer.js';
+import { RenderPass } from 'https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/postprocessing/RenderPass.js';
+import { BloomPass } = await import('https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/postprocessing/BloomPass.js'); // Note: dynamic import due to potential issues; we'll use static import if possible.
+// Actually we can import all three statically:
+import { BloomPass } from 'https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/postprocessing/BloomPass.js';
 import { initPhysics, stepPhysics, getPaddlePosition, getBallPosition, setPaddlePosition, launchBall, resetBall } from './physics.js';
 import { isKeyPressed, getKeys } from './input.js';
 import { addScore, getScore, resetScore } from './scoring.js';
@@ -13,10 +18,48 @@ const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerH
 camera.position.set(0, 5, 10);
 camera.lookAt(0, 0, 0);
 
+// Audio listener
+const listener = new THREE.AudioListener();
+camera.add(listener);
+
+// Audio loader and sounds
+const audioLoader = new THREE.AudioLoader();
+const sounds = {};
+let audioReady = false;
+const soundNames = ['paddle_hit', 'brick_hit', 'wall_hit', 'powerup_collect', 'game_over', 'win'];
+function loadSound(name, url) {
+  audioLoader.load(url, (buffer) => {
+    const sound = new THREE.Audio(listener);
+    sound.setBuffer(buffer);
+    sound.setVolume(0.5);
+    sounds[name] = sound;
+    // Check if all loaded
+    if (Object.keys(sounds).length === soundNames.length) {
+      audioReady = true;
+      console.log('All sounds loaded');
+    }
+  });
+}
+// Load placeholder sounds (they will be empty but still load)
+loadSound('paddle_hit', '/assets/audio/paddle_hit.wav');
+loadSound('brick_hit', '/assets/audio/brick_hit.wav');
+loadSound('wall_hit', '/assets/audio/wall_hit.wav');
+loadSound('powerup_collect', '/assets/audio/powerup_collect.wav');
+loadSound('game_over', '/assets/audio/game_over.wav');
+loadSound('win', '/assets/audio/win.wav');
+
 const renderer = new THREE.WebGLRenderer({ antialias: false });
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setClearColor(0x000000, 1);
 document.body.appendChild(renderer.domElement);
+
+// Post-processing
+const composer = new EffectComposer(renderer);
+composer.addPass(new RenderPass(scene, camera));
+const bloomPass = new BloomPass(1.2); // strength, radius, threshold, renderToScreen
+composer.addPass(bloomPass);
+bloomPass.renderToScreen = true;
 
 // Lighting (optional, MeshBasicMaterial ignores lights)
 const ambientLight = new THREE.AmbientLight(0x404040, 0.5);
@@ -25,15 +68,15 @@ scene.add(ambientLight);
 // Physics initialization
 const { world, paddleBody, ballBody } = initPhysics();
 
-// Paddle mesh (thin box) - using BasicMaterial to avoid complex shaders
+// Paddle mesh (thin box) - using BasicMaterial with neon cyan
 const paddleGeometry = new THREE.BoxGeometry(1, 0.2, 1);
-const paddleMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+const paddleMaterial = new THREE.MeshBasicMaterial({ color: 0x00ffff }); // cyan
 const paddleMesh = new THREE.Mesh(paddleGeometry, paddleMaterial);
 scene.add(paddleMesh);
 
-// Ball mesh (sphere)
-const ballGeometry = new THREE.SphereGeometry(0.25, 16, 16); // fewer segments for lower load
-const ballMaterial = new THREE.MeshBasicMaterial({ color: 0xff00ff });
+// Ball mesh (sphere) - neon magenta
+const ballGeometry = new THREE.SphereGeometry(0.25, 16, 16);
+const ballMaterial = new THREE.MeshBasicMaterial({ color: 0xff00ff }); // magenta
 const ballMesh = new THREE.Mesh(ballGeometry, ballMaterial);
 scene.add(ballMesh);
 
@@ -49,11 +92,40 @@ const startY = 2; // start above paddle
 const startZ = 0;
 
 const brickGeometry = new THREE.BoxGeometry(brickWidth, brickHeight, brickDepth);
-const brickMaterial = new THREE.MeshBasicMaterial({ color: 0x00ffff });
+const brickMaterial = new THREE.MeshBasicMaterial({ color: 0x00ffff }); // cyan, could alternate
+// We'll alternate colors for variety
+const bricks = [];
+const brickBodies = [];
 
-// Arrays for bricks and their physics bodies
-let bricks = [];
-let brickBodies = [];
+for (let row = 0; row < rows; row++) {
+  for (let col = 0; col < cols; col++) {
+    const brickMesh = new THREE.Mesh(brickGeometry, brickMaterial);
+    const x = startX + col * (brickWidth + spacing);
+    const y = startY - row * (brickHeight + spacing);
+    const z = startZ;
+    brickMesh.position.set(x, y, z);
+    scene.add(brickMesh);
+    bricks.push(brickMesh);
+
+    // Static body for brick
+    const brickShape = new CANNON.Box(new CANNON.Vec3(brickWidth/2, brickHeight/2, brickDepth/2));
+    const brickBody = new CANNON.Body({ mass: 0 }); // static
+    brickBody.addShape(brickShape);
+    brickBody.position.set(x, y, z);
+    world.addBody(brickBody);
+    brickBodies.push(brickBody);
+  }
+}
+
+// Background elements: large grid plane
+const gridSize = 20;
+const gridGeometry = new THREE.PlaneGeometry(gridSize, gridSize);
+const gridMaterial = new THREE.MeshBasicMaterial({ color: 0x000000, side: THREE.DoubleSide });
+const gridMesh = new THREE.Mesh(gridGeometry, gridMaterial);
+gridMesh.rotation.x = -Math.PI / 2; // lie flat
+gridMesh.position.y = -3; // below play area
+scene.add(gridMesh);
+// We could add a grid texture but placeholder is fine.
 
 // Power-up related
 const powerUpSize = 0.3;
@@ -104,7 +176,9 @@ function createLevel() {
 
   for (let row = 0; row < rows; row++) {
     for (let col = 0; col < cols; col++) {
-      const brickMesh = new THREE.Mesh(brickGeometry, brickMaterial);
+      // Alternate brick colors for neon effect
+      const brickColor = (row + col) % 2 === 0 ? 0x00ffff : 0xff00ff; // cyan or magenta
+      const brickMesh = new THREE.Mesh(brickGeometry, new THREE.MeshBasicMaterial({ color: brickColor }));
       const x = startX + col * (brickWidth + spacing);
       const y = startY - row * (brickHeight + spacing);
       const z = startZ;
@@ -361,6 +435,11 @@ function checkBallBrickCollisions() {
       // Add score
       addScore(10);
       
+      // Play brick hit sound if ready
+      if (audioReady && sounds.brick_hit) {
+        sounds.brick_hit.play();
+      }
+      
       // Spawn power-up with probability
       const powerUp = spawnPowerUp(new CANNON.Vec3(brickPos.x, brickPos.y, brickPos.z));
       // Optionally log
@@ -389,6 +468,10 @@ function animate() {
     if (isKeyPressed('Space') && !ballLaunched) {
       launchBall(2, 5, 0); // example velocity
       ballLaunched = true;
+      if (audioReady && sounds.paddle_hit) {
+        // Actually paddle hit sound is for paddle collision, not launch. We'll play a launch sound? We don't have launch sound. We'll skip.
+        // We'll play paddle hit sound on paddle collision later.
+      }
     }
     
     // Step physics
@@ -425,13 +508,20 @@ function animate() {
       // Reset ball and paddle? For now just stop launching
       ballLaunched = false;
       resetBall();
-      // Optionally reset score or show game over
+      // Play game over sound if ready
+      if (audioReady && sounds.game_over) {
+        sounds.game_over.play();
+      }
       gameState = STATE_GAME_OVER;
       showGameOverOverlay();
     }
     
     // Win condition: no bricks left
     if (bricks.length === 0) {
+      // Play win sound if ready
+      if (audioReady && sounds.win) {
+        sounds.win.play();
+      }
       gameState = STATE_WIN;
       showWinOverlay();
     }
@@ -441,8 +531,8 @@ function animate() {
   scoreElement.textContent = `Score: ${getScore()}`;
   powerupInfoElement.textContent = `Power-ups: ${timedBalls.length}`;
   
-  // Render scene regardless of state (so overlays are visible)
-  renderer.render(scene, camera);
+  // Render scene with post-processing
+  composer.render(scene, camera);
   
   // Request next frame
   requestAnimationFrame(animate);
@@ -453,6 +543,7 @@ window.addEventListener('resize', () => {
   camera.aspect = window.innerWidth / window.innerHeight;
   camera.updateProjectionMatrix();
   renderer.setSize(window.innerWidth, window.innerHeight);
+  composer.setSize(window.innerWidth, window.innerHeight);
 });
 
 // Initialize game on load

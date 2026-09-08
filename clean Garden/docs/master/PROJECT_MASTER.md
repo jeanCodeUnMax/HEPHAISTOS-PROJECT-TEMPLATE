@@ -13,8 +13,8 @@ ID: NONE
 None.
 
 ## TASK_ACTIVE
-ID: T005
-Implement game states
+ID: T006
+Polish cyberpunk aesthetic and audio
 
 ## SUCCESS_CRITERION
 Defined by PRD/task evidence rules.
@@ -23,7 +23,7 @@ Defined by PRD/task evidence rules.
 No conclusion recorded yet.
 
 ## NEXT_ACTION
-Execute T005 and satisfy its evidence checks.
+Execute T006.
 
 ## BACKLOG
 - Managed by project task graph / agent rules
