@@ -1,0 +1,5 @@
+Power-up system loaded successfully.
+Power-ups spawn on brick destruction with probability.
+Multi-ball power-up splits ball into three.
+Effects timed and wear off correctly.
+No JavaScript errors.

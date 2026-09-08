@@ -4,6 +4,7 @@ import * as CANNON from 'https://cdn.jsdelivr.net/npm/cannon-es@0.20.0/dist/cann
 import { initPhysics, stepPhysics, getPaddlePosition, getBallPosition, setPaddlePosition, launchBall, resetBall } from './physics.js';
 import { isKeyPressed, getKeys } from './input.js';
 import { addScore, getScore, resetScore } from './scoring.js';
+import { spawnPowerUp, updatePowerUps, checkPaddlePowerUpCollisions, updateTimedBalls } from './powerups.js';
 
 // Scene setup
 const scene = new THREE.Scene();
@@ -74,6 +75,13 @@ for (let row = 0; row < rows; row++) {
   }
 }
 
+// UI elements
+const scoreElement = document.getElementById('score');
+const powerupInfoElement = document.getElementById('powerup-info');
+
+// Input handling: paddleBody already from initPhysics
+// ballBody already from initPhysics
+
 // Input handling: paddle movement speed
 const paddleSpeed = 5; // units per second
 
@@ -105,7 +113,11 @@ function checkBallBrickCollisions() {
       // Add score
       addScore(10);
       
-      // Optionally, play a sound or effect here
+      // Spawn power-up with probability
+      const powerUp = spawnPowerUp(new CANNON.Vec3(brickPos.x, brickPos.y, brickPos.z));
+      // Optionally log
+      // if (powerUp) console.log('Power-up spawned');
+      
       break; // assume one collision per frame for simplicity
     }
   }
@@ -133,8 +145,17 @@ function animate() {
   // Step physics
   stepPhysics(dt);
   
+  // Update power-ups (remove fallen ones, etc.)
+  updatePowerUps(dt);
+  
+  // Check for paddle-power-up collisions
+  checkPaddlePowerUpCollisions();
+  
   // Check for ball-brick collisions
   checkBallBrickCollisions();
+  
+  // Update timed balls (remove expired)
+  updateTimedBalls(dt);
   
   // Synchronize meshes with physics bodies
   paddleMesh.position.copy(getPaddlePosition());
@@ -143,7 +164,12 @@ function animate() {
   ballMesh.position.copy(getBallPosition());
   ballMesh.quaternion.copy(ballBody.quaternion);
   
+  // Update UI
+  scoreElement.textContent = `Score: ${getScore()}`;
+  powerupInfoElement.textContent = `Power-ups: ${timedBalls.length}`;
+  
   // Simple game over condition: ball falls below paddle (y < -3)
+  // We'll consider game over if ALL balls fall below (or just the main one? For simplicity, if main ball falls)
   if (ballBody.position.y < -3) {
     // Reset ball and paddle? For now just stop launching
     ballLaunched = false;

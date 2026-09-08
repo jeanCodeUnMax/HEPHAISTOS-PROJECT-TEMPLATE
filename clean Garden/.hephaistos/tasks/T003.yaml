@@ -2,7 +2,7 @@ id: T003
 title: Implement brick destruction and scoring
 milestone: M01
 objective: Implement destructible bricks arranged in a grid that are destroyed on ball impact, with score tracking.
-status: ACTIVE
+status: DONE
 depends_on:
   - T002
 subtasks:

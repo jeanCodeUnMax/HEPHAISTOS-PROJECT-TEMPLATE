@@ -6,9 +6,27 @@
     <style>
         body { margin: 0; overflow: hidden; background: #000; }
         canvas { display: block; }
+        #score {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            color: #00ff00;
+            font-family: monospace;
+            font-size: 24px;
+        }
+        #powerup-info {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            color: #ffff00;
+            font-family: monospace;
+            font-size: 18px;
+        }
     </style>
 </head>
 <body>
+    <div id="score">Score: 0</div>
+    <div id="powerup-info">Power-ups: 0</div>
     <script type="module" src="/src/main.js"></script>
 </body>
 </html>

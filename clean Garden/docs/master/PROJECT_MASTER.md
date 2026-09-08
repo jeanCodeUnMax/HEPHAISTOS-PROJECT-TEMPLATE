@@ -13,8 +13,8 @@ ID: NONE
 None.
 
 ## TASK_ACTIVE
-ID: T003
-Implement brick destruction and scoring
+ID: T004
+Implement power-up system
 
 ## SUCCESS_CRITERION
 Defined by PRD/task evidence rules.
@@ -23,7 +23,7 @@ Defined by PRD/task evidence rules.
 No conclusion recorded yet.
 
 ## NEXT_ACTION
-Execute T003 and satisfy its evidence checks.
+Execute T004.
 
 ## BACKLOG
 - Managed by project task graph / agent rules
