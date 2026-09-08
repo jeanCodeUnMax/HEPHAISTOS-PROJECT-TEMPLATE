@@ -1,0 +1,10 @@
+{
+  "enabled": true,
+  "master_file": "docs/master/PROJECT_MASTER.md",
+  "require_initialized_project": true,
+  "required_sections": ["MISSION", "HYPOTHESIS_ACTIVE", "EXPERIMENT_ACTIVE", "TASK_ACTIVE", "SUCCESS_CRITERION", "LAST_CONCLUSION", "NEXT_ACTION"],
+  "tests": {"commit": [], "push": []},
+  "require_staged_changes_on_commit": true,
+  "block_unresolved_conflicts": true,
+  "show_master_before_gate": true
+}

@@ -1,0 +1,11 @@
+id: T001
+title: Example task
+milestone: M01
+objective: Replace this example with a real, independently verifiable outcome.
+status: PENDING
+requires: []
+subtasks:
+  - Define one concrete execution step
+checks:
+  - path: evidence/T001/example.txt
+next: NONE
