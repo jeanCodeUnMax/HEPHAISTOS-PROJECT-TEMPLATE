@@ -2,7 +2,7 @@ id: T004
 title: Implement power-up system
 milestone: M01
 objective: Implement power-ups that spawn on brick destruction and affect gameplay when collected by the paddle.
-status: ACTIVE
+status: DONE
 depends_on:
   - T003
 subtasks:

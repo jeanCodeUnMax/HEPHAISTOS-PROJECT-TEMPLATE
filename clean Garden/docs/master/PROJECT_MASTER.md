@@ -13,8 +13,8 @@ ID: NONE
 None.
 
 ## TASK_ACTIVE
-ID: T004
-Implement power-up system
+ID: T005
+Implement game states
 
 ## SUCCESS_CRITERION
 Defined by PRD/task evidence rules.
@@ -23,7 +23,7 @@ Defined by PRD/task evidence rules.
 No conclusion recorded yet.
 
 ## NEXT_ACTION
-Execute T004.
+Execute T005 and satisfy its evidence checks.
 
 ## BACKLOG
 - Managed by project task graph / agent rules
