@@ -195,6 +195,7 @@ function createLevel() {
       brickBodies.push(brickBody);
     }
   }
+  console.log(`Created ${bricks.length} bricks`);
 }
 
 // Function to reset physics objects (paddle, ball) to initial state
