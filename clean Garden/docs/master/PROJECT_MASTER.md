@@ -23,7 +23,7 @@ Defined by PRD/task evidence rules.
 No conclusion recorded yet.
 
 ## NEXT_ACTION
-Execute T003.
+Execute T003 and satisfy its evidence checks.
 
 ## BACKLOG
 - Managed by project task graph / agent rules
