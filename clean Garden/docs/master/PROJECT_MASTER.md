@@ -13,8 +13,8 @@ ID: NONE
 None.
 
 ## TASK_ACTIVE
-ID: T002
-Implement paddle controls and ball physics
+ID: T003
+Implement brick destruction and scoring
 
 ## SUCCESS_CRITERION
 Defined by PRD/task evidence rules.
@@ -23,7 +23,7 @@ Defined by PRD/task evidence rules.
 No conclusion recorded yet.
 
 ## NEXT_ACTION
-Execute T002.
+Execute T003.
 
 ## BACKLOG
 - Managed by project task graph / agent rules

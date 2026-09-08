@@ -5,7 +5,7 @@ def field(txt,k,d=''):
  m=re.search(rf'^\s*{re.escape(k)}:\s*(.*?)\s*$',txt,re.M); return m.group(1).strip().strip('"\'') if m else d
 def pstatus(): return field(PROJ.read_text(encoding='utf-8'),'status','UNINITIALIZED').upper() if PROJ.exists() else 'UNINITIALIZED'
 def req_init():
- if pstatus()!='ACTIVE': raise SystemExit('⛔ Project UNINITIALIZED. Run: .\\hephaistos init --name "My Project" --mission "..."')
+ if pstatus()!='ACTIVE': raise SystemExit('[ERROR] Project UNINITIALIZED. Run: .\\hephaistos init --name "My Project" --mission "..."')
 def log(ev,task=None):
  H.mkdir(exist_ok=True); LEDGER.touch(exist_ok=True)
  with LEDGER.open('a',encoding='utf-8') as f:f.write(json.dumps({'ts':datetime.datetime.now(datetime.timezone.utc).isoformat(),'event':ev,'task':task})+'\n')
@@ -35,7 +35,7 @@ def sync(tid='NONE',title='No active task.',nxt='Create/import PRD and task grap
 def init(args):
  if pstatus()=='ACTIVE' and not args.force: raise SystemExit('⛔ Project already initialized')
  H.mkdir(exist_ok=True); TD.mkdir(exist_ok=True); LEDGER.touch(exist_ok=True); pid=args.id or 'PROJECT-001'
- PROJ.write_text(f'project:\n  id: {pid}\n  name: "{args.name}"\n  mission: "{args.mission}"\n  status: ACTIVE\n',encoding='utf-8'); STATE.write_text('active_task: null\nactive_milestone: null\nlast_transition: project_initialized\n',encoding='utf-8'); sync(nxt='Create/import the PRD, then decompose it into verifiable tasks.'); log('PROJECT_INITIALIZED'); print(f'✅ {pid} initialized — {args.name}')
+ PROJ.write_text(f'project:\n  id: {pid}\n  name: "{args.name}"\n  mission: "{args.mission}"\n  status: ACTIVE\n',encoding='utf-8'); STATE.write_text('active_task: null\nactive_milestone: null\nlast_transition: project_initialized\n',encoding='utf-8'); sync(nxt='Create/import the PRD, then decompose it into verifiable tasks.'); log('PROJECT_INITIALIZED'); print(f'[PASS] {pid} initialized — {args.name}')
 def list_tasks(_):
  req_init(); a=tasks(); print('HEPHAISTOS TASKS\n');
  if not a: print('(no tasks yet — decompose the PRD first)'); return
