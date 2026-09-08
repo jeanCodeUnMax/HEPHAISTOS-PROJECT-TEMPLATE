@@ -1,0 +1,46 @@
+id: T003
+title: Implement brick destruction and scoring
+milestone: M01
+objective: Implement destructible bricks arranged in a grid that are destroyed on ball impact, with score tracking.
+status: PENDING
+depends_on:
+  - T002
+subtasks:
+  - Create brick mesh geometry (thin box) and material
+  - Generate grid of bricks (e.g., 10 columns x 4 rows) with spacing
+  - Add brick bodies to physics world (static or dynamic? static for simplicity)
+  - Implement collision detection between ball and bricks
+  - On collision: remove brick from scene and physics world, increment score
+  - Create score display element in HTML/CSS
+  - Update score display in real-time
+  - Add win condition check (when brick count reaches zero)
+inputs:
+  - src/main.js (from T002)
+  - src/physics.js
+  - src/input.js
+  - index.html
+outputs:
+  - src/main.js (updated with brick grid and collision logic)
+  - src/scoring.js (new module for score management)
+  - assets/textures/brick.png (optional texture)
+  - index.html (updated with score display)
+tests:
+  - Manual: Ball collides with brick and brick disappears
+  - Manual: Score increments by fixed amount per brick destroyed
+  - Manual: Multiple bricks can be destroyed in sequence
+  - Manual: Score display updates correctly
+  - Manual: When all bricks destroyed, win condition triggers
+  - Manual: Bricks are solid obstacles (ball bounces off them)
+evidence:
+  - evidence/T003/brick_destroy.gif
+  - evidence/T003/score_increment.gif
+  - evidence/T003/win_condition.png
+  - evidence/T003/console_log.txt
+done_when:
+  - Ball collision with brick results in brick removal from scene and physics world
+  - Score increases by consistent amount (e.g., 10 points) per brick destroyed
+  - Score display updates immediately and accurately
+  - When brick count reaches zero, win state is triggered
+  - Ball bounces off bricks as solid objects (does not pass through)
+  - No JavaScript errors in console during brick interaction
+next: T004

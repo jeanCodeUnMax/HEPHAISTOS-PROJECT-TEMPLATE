@@ -1,0 +1,2 @@
+Three.js scene initialized successfully.
+No JavaScript errors.

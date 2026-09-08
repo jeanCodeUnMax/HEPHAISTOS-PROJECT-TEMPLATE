@@ -1,0 +1,31 @@
+id: T001
+title: Set up development environment and basic 3D scene
+milestone: M01
+objective: Have a working development setup that renders a basic Three.js scene with camera, lighting, and a simple object to verify the pipeline.
+status: DONE
+depends_on: []
+subtasks:
+  - Initialize project with package.json, install three.js and cannon-esx
+  - Create basic HTML file with canvas container
+  - Set up Three.js scene, camera, renderer
+  - Add basic lighting (ambient + directional)
+  - Add a test mesh (cube) to verify rendering
+  - Implement animation loop
+inputs: []
+outputs:
+  - src/main.js
+  - index.html
+  - package.json
+tests:
+  - Manual verification: Open index.html in browser, see rotating cube
+evidence:
+  - evidence/T001/screenshot.png
+  - evidence/T001/console_log.txt
+checks:
+  - path: evidence/T001/screenshot.png
+  - path: evidence/T001/console_log.txt
+done_when:
+  - Browser displays a Three.js scene with at least one visible 3D object
+  - No JavaScript errors in console during normal operation
+  - Animation loop running (object moving or responding to resize)
+next: T002

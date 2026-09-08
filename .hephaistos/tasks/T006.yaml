@@ -1,0 +1,60 @@
+id: T006
+title: Polish cyberpunk aesthetic and audio
+milestone: M01
+objective: Enhance visual and audio presentation to clearly convey cyberpunk theme and provide satisfying feedback.
+status: PENDING
+depends_on:
+  - T005
+subtasks:
+  - Implement cyberpunk color scheme: dark background, neon accents (cyan, magenta, electric blue)
+  - Modify paddle, ball, brick, and power-up materials to use emissive properties where appropriate
+  - Add background elements: simple grid plane, distant low-poly buildings or billboards (optional)
+  - Add post-processing bloom effect for neon glow (Three.js EffectComposer)
+  - Implement audio feedback:
+      - Ball hitting paddle: short synth 'blip'
+      - Ball hitting brick: crisp 'click' or ' zap'
+      - Ball hitting walls: softer 'thud'
+      - Power-up collection: rising 'whoop' or coin sound
+      - Game over: low 'bwaah'
+      - Win: short jingle or fanfare
+  - Add simple UI improvements: score font styling, start/game over/win screen aesthetics
+  - Optional: add subtle camera shake on major impacts (ball hitting paddle hard)
+  - Ensure visual clarity: ball and paddle remain clearly distinguishable from background
+inputs:
+  - src/main.js (from T005)
+  - src/states.js
+  - src/scoring.js
+  - src/powerups.js
+  - src/physics.js
+outputs:
+  - src/render.js (updated with materials, lights, post-processing)
+  - src/audio.js (new module for sound management)
+  - assets/audio/paddle_hit.wav
+  - assets/audio/brick_hit.wav
+  - assets/audio/wall_hit.wav
+  - assets/audio/powerup_collect.wav
+  - assets/audio/game_over.wav
+  - assets/audio/win.wav
+  - assets/textures/grid.png
+  - assets/textures/neon_border.png
+  - index.html (updated to include audio elements if needed)
+tests:
+  - Manual: Visual theme consistently feels 'cyberpunk' (dark with neon accents)
+  - Manual: Ball, paddle, and bricks are clearly visible against background
+  - Manual: Audio plays correctly for paddle hit, brick hit, wall hit, power-up, game over, win
+  - Manual: No audio glitches or missing sounds
+  - Manual: Post-processing bloom enhances neon elements without blurring gameplay
+  - Manual: Camera remains stable; optional shake is subtle and not disorienting
+evidence:
+  - evidence/T006/aesthetic_screenshot.png
+  - evidence/T006/neon_glow_demo.gif
+  - evidence/T006/audio_feedback.gif (showing subtitles when sounds play)
+  - evidence/T006/console_log.txt
+done_when:
+  - Visual presentation clearly conveys cyberpunk theme via color scheme and effects
+  - Key game objects (paddle, ball, bricks) are easily distinguishable
+  - Audio feedback plays for all major events: paddle hit, brick hit, wall hit, power-up collection, game over, win
+  - No audio errors or missing files in console
+  - Post-processing (if used) enhances rather than degrades gameplay clarity
+  - No JavaScript errors in console during normal gameplay
+next: T007

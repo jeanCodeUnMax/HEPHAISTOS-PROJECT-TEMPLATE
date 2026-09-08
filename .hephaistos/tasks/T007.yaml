@@ -1,0 +1,54 @@
+id: T007
+title: Final testing, documentation, and deployment prep
+milestone: M01
+objective: Verify the complete game meets all acceptance criteria, compile documentation, and prepare evidence for validation.
+status: PENDING
+depends_on:
+  - T006
+subtasks:
+  - Create comprehensive README.md with:
+      - Project overview and tech stack
+      - How to run locally (npm install, npm dev)
+      - Game controls and objectives
+      - Overview of cyberpunk theme and features
+  - Run final playthrough test:
+      - Start game, play through to win or loss
+      - Verify all mechanics work: paddle, ball, bricks, scoring, power-ups, game states
+      - Check for JavaScript errors in console
+      - Note any bugs or issues to fix
+  - Fix any blocking issues discovered during playthrough
+  - Ensure all evidence directories contain appropriate files:
+      - evidence/T001/ through T006/ with screenshots, gifs, logs
+  - Verify done_when criteria for all tasks T001-T006 are satisfied
+  - Update PROJECT_MASTER.md to reflect current active task (none) and next action
+  - Optional: Create a simple build script for distribution
+inputs:
+  - All source files from T001-T006
+  - .hephaistos/state.yaml
+  - .hephaistos/ledger.jsonl
+  - docs/master/PROJECT_MASTER.md
+outputs:
+  - README.md (root)
+  - Updated docs/master/PROJECT_MASTER.md (showing completion)
+  - Complete evidence directories
+  - Optional: dist/ folder with bundled version
+tests:
+  - Manual: Game loads and starts within 3 seconds
+  - Manual: Full playthrough possible from start to win/loss without errors
+  - Manual: All acceptance criteria from PRD are met (checklist)
+  - Manual: No JavaScript errors in console during extended play
+  - Manual: README.md allows new user to run game successfully
+  - Manual: All task evidence directories contain relevant validation files
+evidence:
+  - evidence/T007/final_playthrough_video.mp4 (or gif)
+  - evidence/T007/acceptance_criteria_checklist.txt
+  - evidence/T007/README_verification.png
+  - evidence/T007/console_log_final.txt
+done_when:
+  - Game is playable from start screen to win or loss state without blockers
+  - All PRD acceptance criteria are satisfied (verified via checklist)
+  - No JavaScript errors in console during normal gameplay
+  - README.md exists and enables a new user to run the game successfully
+  - All evidence directories T001-T006 contain appropriate validation files
+  - PROJECT_MASTER.md reflects completion (no active task, next action: review or extend)
+next: (none - MVP complete)

@@ -1,8 +1,8 @@
 # PROJECT MASTER
 
 ## MISSION
-ID: UNINITIALIZED
-Run `hephaistos init` to instantiate this template.
+ID: PROJECT-001
+Développer un jeu de casse-brique cyberpunk en 3D avec Three.js et cannon-esx
 
 ## HYPOTHESIS_ACTIVE
 ID: NONE
@@ -13,17 +13,17 @@ ID: NONE
 None.
 
 ## TASK_ACTIVE
-ID: NONE
-No active task. Project is not initialized.
+ID: T002
+Implement paddle controls and ball physics
 
 ## SUCCESS_CRITERION
-Not defined yet.
+Defined by PRD/task evidence rules.
 
 ## LAST_CONCLUSION
-Template state only; no project conclusion exists.
+No conclusion recorded yet.
 
 ## NEXT_ACTION
-Initialize the project, then create/import the PRD and decompose it into a task graph.
+Execute T002.
 
 ## BACKLOG
-- Empty
+- Managed by project task graph / agent rules

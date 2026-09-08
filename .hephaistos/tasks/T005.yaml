@@ -1,0 +1,57 @@
+id: T005
+title: Implement game states
+milestone: M01
+objective: Implement clear game states (start, play, game over, win) with appropriate UI and transitions.
+status: PENDING
+depends_on:
+  - T004
+subtasks:
+  - Define game state enum: START, PLAY, GAME_OVER, WIN
+  - Create start screen overlay with title and instructions
+  - Create game over screen overlay with final score and restart prompt
+  - Create win screen overlay with congratulations and restart prompt
+  - Implement state transition logic:
+      - START → PLAY on spacebar or click
+      - PLAY → GAME_OVER when ball falls below paddle
+      - PLAY → WIN when all bricks destroyed
+      - GAME_OVER/WIN → START on spacebar or click
+  - Update rendering to show/hide UI elements based on current state
+  - Pause physics updates during START, GAME_OVER, WIN states
+  - Reset game state (positions, score, brick grid) on transition to START
+  - Ensure ball is launched only when in PLAY state and spacebar pressed (if not already moving)
+inputs:
+  - src/main.js (from T004)
+  - src/physics.js
+  - src/scoring.js
+  - src/powerups.js
+  - index.html
+outputs:
+  - src/states.js (new module for game state management)
+  - src/reset.js (new module for resetting game state)
+  - index.html (updated with overlay divs for each state)
+  - assets/styles/game.css (new CSS for overlays)
+tests:
+  - Manual: Game starts in START state with visible instructions
+  - Manual: Pressing space or clicking starts game (→ PLAY state)
+  - Manual: During PLAY, if ball falls below paddle → GAME_OVER state
+  - Manual: During PLAY, if last brick destroyed → WIN state
+  - Manual: GAME_OVER and WIN screens show final score and restart prompt
+  - Manual: Pressing space/game click from GAME_OVER/WIN → START state
+  - Manual: Starting new game resets score, brick positions, paddle/ball states
+  - Manual: No gameplay updates occur during START, GAME_OVER, WIN states
+evidence:
+  - evidence/T005/start_screen.png
+  - evidence/T005/gameplay.png
+  - evidence/T005/game_over.png
+  - evidence/T005/win_screen.png
+  - evidence/T005/state_transitions.gif
+  - evidence/T005/console_log.txt
+done_when:
+  - Game initializes in START state with clear start instructions
+  - Transition from START to PLAY occurs on user input (space or click)
+  - Transition from PLAY to GAME_OVER occurs when ball passes below paddle
+  - Transition from PLAY to WIN occurs when brick count reaches zero
+  - Transition from GAME_OVER/WIN to START occurs on user input
+  - All relevant game state (score, paddle/ball positions, brick grid) is reset on new game
+  - No JavaScript errors in console during state transitions
+next: T006

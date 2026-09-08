@@ -1,0 +1,47 @@
+id: T004
+title: Implement power-up system
+milestone: M01
+objective: Implement power-ups that spawn on brick destruction and affect gameplay when collected by the paddle.
+status: PENDING
+depends_on:
+  - T003
+subtasks:
+  - Define power-up types (e.g., multi-ball, laser paddle, sticky paddle, paddle enlargement)
+  - Create power-up mesh representations (distinct shapes/colors)
+  - Implement spawning mechanism: on brick destruction, random chance to spawn power-up
+  - Add power-up bodies to physics world (dynamic, fall with gravity)
+  - Implement collision detection between paddle and power-ups
+  - On collection: remove power-up, apply effect for limited duration
+  - Create visual indicators for active power-ups (e.g., paddle color change, UI icons)
+  - Implement effect timers and cleanup
+inputs:
+  - src/main.js (from T003)
+  - src/physics.js
+  - src/scoring.js
+  - src/input.js
+outputs:
+  - src/powerups.js (new module for power-up logic)
+  - src/effects.js (new module for managing timed effects)
+  - assets/textures/powerup_multi.png (etc.)
+  - index.html (updated for power-up UI indicators)
+tests:
+  - Manual: Power-up spawns occasionally when brick is destroyed
+  - Manual: Power-up falls with gravity and can be caught by paddle
+  - Manual: Collecting power-up triggers visual/audio feedback
+  - Manual: Effect applies correctly (e.g., multi-ball spawns two additional balls)
+  - Manual: Effect wears off after duration and gameplay returns to normal
+  - Manual: Multiple power-ups can be active simultaneously (if designed)
+evidence:
+  - evidence/T004/powerup_spawn.gif
+  - evidence/T004/powerup_collect.gif
+  - evidence/T004/multiball_effect.gif
+  - evidence/T004/sticky_paddle.gif
+  - evidence/T004/console_log.txt
+done_when:
+  - Power-ups spawn with configurable probability when bricks are destroyed
+  - Power-ups fall under gravity and can be collided with by the paddle
+  - Collecting a power-up removes it from the scene and applies its effect
+  - At least one power-up type produces a clear, observable change in gameplay
+  - Effect duration is timed and automatically reverses when expired
+  - No JavaScript errors in console during power-up interaction
+next: T005
