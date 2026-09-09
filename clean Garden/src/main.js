@@ -548,5 +548,8 @@ window.addEventListener('resize', () => {
 // Initialize game on load
 initGame();
 
+// Export for use in other modules
+export { scene, world, ballBody };
+
 // Start animation
 animate();

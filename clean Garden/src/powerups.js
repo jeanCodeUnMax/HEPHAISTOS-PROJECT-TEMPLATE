@@ -1,4 +1,8 @@
 // Power-up system with timed effects
+import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js';
+import * as CANNON from 'https://cdn.jsdelivr.net/npm/cannon-es@0.20.0/dist/cannon-es.js';
+import { scene, world, ballBody } from './main.js';
+
 let powerUps = []; // array of {mesh, body, type, spawnedTime}
 const powerUpSpawnProbability = 0.15; // 15% chance when brick destroyed
 const powerUpSize = 0.3;
@@ -6,7 +10,6 @@ const powerUpSize = 0.3;
 // Power-up types
 const POWER_UP_TYPES = {
   MULTI_BALL: 'multi-ball'
-  // Could add more: LASER_PADDLE, STICKY_PADDLE, etc.
 };
 
 // Timed effects: extra balls that disappear after duration
@@ -123,7 +126,7 @@ function spawnTimedBalls(count) {
     scene.add(ballMesh);
 
     const ballShape = new CANNON.Sphere(0.25);
-    const ballBody = new CANNON.Body({
+    const ballBodyLocal = new CANNON.Body({
       mass: 0.1,
       position: new CANNON.Vec3(ballBody.position.x, ballBody.position.y + 0.5, ballBody.position.z), // slightly above current ball
       velocity: new CANNON.Vec3(
@@ -133,12 +136,12 @@ function spawnTimedBalls(count) {
       ),
       material: new CANNON.Material({ restitution: 0.8 })
     });
-    ballBody.addShape(ballShape);
-    world.addBody(ballBody);
+    ballBodyLocal.addShape(ballShape);
+    world.addBody(ballBodyLocal);
 
     // Add to timed balls with expiration time
     const removeTime = Date.now() + MULTI_BALL_DURATION;
-    timedBalls.push({ mesh: ballMesh, body: ballBody, removeTime });
+    timedBalls.push({ mesh: ballMesh, body: ballBodyLocal, removeTime });
   }
 }
 
