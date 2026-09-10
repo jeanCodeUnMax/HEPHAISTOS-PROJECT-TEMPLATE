@@ -1,9 +1,9 @@
 // Import modules
-import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js';
-import * as CANNON from 'https://cdn.jsdelivr.net/npm/cannon-es@0.20.0/dist/cannon-es.js';
-import { EffectComposer } from 'https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/postprocessing/EffectComposer.js';
-import { RenderPass } from 'https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/postprocessing/RenderPass.js';
-import { BloomPass } from 'https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/postprocessing/BloomPass.js';
+import * as THREE from 'three';
+import * as CANNON from 'cannon-es';
+import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
+import { BloomPass } from 'three/examples/jsm/postprocessing/BloomPass.js';
 import { initPhysics, stepPhysics, getPaddlePosition, getBallPosition, setPaddlePosition, launchBall, resetBall } from './physics.js';
 import { isKeyPressed, getKeys } from './input.js';
 import { addScore, getScore, resetScore } from './scoring.js';
@@ -36,6 +36,8 @@ function loadSound(name, url) {
       audioReady = true;
       console.log('All sounds loaded');
     }
+  }, undefined, (err) => {
+    console.warn('Failed to load sound:', name, err);
   });
 }
 // Load placeholder sounds (they will be empty but still load)
@@ -52,12 +54,17 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.setClearColor(0x000000, 1);
 document.body.appendChild(renderer.domElement);
 
-// Post-processing
-const composer = new EffectComposer(renderer);
-composer.addPass(new RenderPass(scene, camera));
-const bloomPass = new BloomPass(1.2); // strength, radius, threshold, renderToScreen
-composer.addPass(bloomPass);
-bloomPass.renderToScreen = true;
+// Post-processing (simplified for debugging)
+// const composer = new EffectComposer(renderer);
+// composer.addPass(new RenderPass(scene, camera));
+// const bloomPass = new BloomPass(1.2);
+// composer.addPass(bloomPass);
+// bloomPass.renderToScreen = true;
+
+// Use direct rendering for now
+function render() {
+  renderer.render(scene, camera);
+}
 
 // Lighting (optional, MeshBasicMaterial ignores lights)
 const ambientLight = new THREE.AmbientLight(0x404040, 0.5);
@@ -71,6 +78,14 @@ const paddleGeometry = new THREE.BoxGeometry(1, 0.2, 1);
 const paddleMaterial = new THREE.MeshBasicMaterial({ color: 0x00ffff }); // cyan
 const paddleMesh = new THREE.Mesh(paddleGeometry, paddleMaterial);
 scene.add(paddleMesh);
+
+// Add a visible test object to confirm rendering
+const testGeometry = new THREE.SphereGeometry(0.5, 16, 16);
+const testMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+const testMesh = new THREE.Mesh(testGeometry, testMaterial);
+testMesh.position.set(0, 0, 0);
+scene.add(testMesh);
+console.log('Test sphere added to scene');
 
 // Ball mesh (sphere) - neon magenta
 const ballGeometry = new THREE.SphereGeometry(0.25, 16, 16);
@@ -92,8 +107,8 @@ const startZ = 0;
 const brickGeometry = new THREE.BoxGeometry(brickWidth, brickHeight, brickDepth);
 const brickMaterial = new THREE.MeshBasicMaterial({ color: 0x00ffff }); // cyan, could alternate
 // We'll alternate colors for variety
-const bricks = [];
-const brickBodies = [];
+let bricks = [];
+let brickBodies = [];
 
 for (let row = 0; row < rows; row++) {
   for (let col = 0; col < cols; col++) {
@@ -264,6 +279,23 @@ function initGame() {
   ballLaunched = false;
   hideAllOverlays();
   showStartOverlay();
+}
+
+// Start the game (hide overlays, launch ball)
+function startGame() {
+  resetScore();
+  createLevel();
+  resetPhysicsObjects();
+  cleanupExtraObjects();
+  powerUps = [];
+  timedBalls = [];
+  ballLaunched = false;
+  hideAllOverlays();
+  gameState = STATE_PLAY;
+  resetBall();
+  launchBall(0, 5, 0);
+  ballLaunched = true;
+  console.log('Game started');
 }
 
 // Power-up functions
@@ -451,8 +483,21 @@ function checkBallBrickCollisions() {
 
 // Animation loop
 const clock = new THREE.Clock();
+let frameCount = 0;
 function animate() {
   const dt = clock.getDelta(); // seconds
+  
+  if (frameCount === 0) {
+    console.log('Animation loop started');
+    console.log('Camera position:', camera.position);
+    console.log('Scene children count:', scene.children.length);
+    console.log('Renderer domElement:', renderer.domElement);
+  }
+  frameCount++;
+  
+  if (frameCount % 60 === 0) { // Log every 60 frames
+    console.log(`Frame ${frameCount}, gameState: ${gameState}, ballPos:`, ballBody.position);
+  }
   
   if (gameState === STATE_PLAY) {
     // Handle input
@@ -530,8 +575,8 @@ function animate() {
   scoreElement.textContent = `Score: ${getScore()}`;
   powerupInfoElement.textContent = `Power-ups: ${timedBalls.length}`;
   
-  // Render scene with post-processing
-  composer.render(scene, camera);
+  // Render scene
+  render();
   
   // Request next frame
   requestAnimationFrame(animate);
@@ -545,8 +590,24 @@ window.addEventListener('resize', () => {
   composer.setSize(window.innerWidth, window.innerHeight);
 });
 
-// Initialize game on load
-initGame();
+// Event listeners for UI buttons
+startButton.addEventListener('click', () => {
+  console.log('Start button clicked');
+  startGame();
+});
+restartButton.addEventListener('click', () => {
+  console.log('Restart button clicked');
+  startGame();
+});
+winRestartButton.addEventListener('click', () => {
+  console.log('Win restart button clicked');
+  startGame();
+});
+console.log('Buttons initialized:', startButton, restartButton, winRestartButton);
+
+// Initialize game on load - start immediately
+console.log('Starting game immediately');
+startGame();
 
 // Export for use in other modules
 export { scene, world, ballBody };

@@ -1,5 +1,6 @@
 // Physics module using cannon-es
-import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js';
+import * as THREE from 'three';
+import * as CANNON from 'cannon-es';
 
 let world, paddleBody, ballBody;
 
@@ -8,10 +9,10 @@ function initPhysics() {
   world = new CANNON.World({
     gravity: new CANNON.Vec3(0, -9.82, 0), // m/s²
     broadphase: new CANNON.NaiveBroadphase(),
-    solver: new CANNON.GSSEquationsolver()
+    solver: new CANNON.GSSolver()
   });
-  world.defaultContactMaterial.contactMaterial.stiffness = 1e7;
-  world.defaultContactMaterial.contactMaterial.restitution = 0.5;
+  world.defaultContactMaterial.contactEquationStiffness = 1e7;
+  world.defaultContactMaterial.restitution = 0.5;
   world.broadphase.useBoundingBoxes = true;
 
   // Create paddle (kinematic, moves with player)

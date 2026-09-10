@@ -1,6 +1,6 @@
 // Power-up system with timed effects
-import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js';
-import * as CANNON from 'https://cdn.jsdelivr.net/npm/cannon-es@0.20.0/dist/cannon-es.js';
+import * as THREE from 'three';
+import * as CANNON from 'cannon-es';
 import { scene, world, ballBody } from './main.js';
 
 let powerUps = []; // array of {mesh, body, type, spawnedTime}
