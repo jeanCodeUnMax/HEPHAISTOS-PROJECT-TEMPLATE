@@ -7,7 +7,7 @@
     "start": "vite",
     "dev": "vite",
     "build": "vite build",
-    "prepare": "cd .. && husky 'clean Garden/.husky'"
+    "prepare": "husky"
   },
   "dependencies": {
     "cannon-es": "^0.20.0",
