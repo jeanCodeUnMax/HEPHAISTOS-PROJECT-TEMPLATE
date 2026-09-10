@@ -1,0 +1,30 @@
+#!/bin/sh
+MSG_FILE="$1"
+case "$MSG_FILE" in
+  /*) ;;
+  *) MSG_FILE="$(pwd)/$MSG_FILE" ;;
+esac
+
+cd "clean Garden"
+
+# Commitlint checking the commit message
+npx --no -- commitlint --edit "$MSG_FILE"
+
+# Hephaistos Task check
+ROOT="$(git rev-parse --show-toplevel 2>/dev/null)" || exit 0
+MASTER="$ROOT/clean Garden/.hephaistos/master/PROJECT_MASTER.md"
+[ -f "$MASTER" ] || exit 0
+
+TASK="$(sed -n '/^## TASK_ACTIVE$/,/^## /p' "$MASTER" | grep -Eo 'ID:[[:space:]]*T[0-9]+' | head -1 | grep -Eo 'T[0-9]+')"
+[ -z "$TASK" ] && exit 0
+
+if ! grep -Eiq "(^|[^A-Za-z0-9])$TASK([^A-Za-z0-9]|$)" "$MSG_FILE"; then
+  echo ""
+  echo "⛔ HEPHAISTOS WATCHDOG: commit message blocked"
+  echo "Active task is: $TASK"
+  echo "Commit message must contain: $TASK"
+  echo "Example: feat: $TASK - capture hidden-state metrics"
+  echo ""
+  exit 42
+fi
+exit 0
