@@ -23,7 +23,7 @@ Defined by PRD/task evidence rules.
 No conclusion recorded yet.
 
 ## NEXT_ACTION
-Discuss and fill out BRAINSTORM.md with your AI agent, then run `.\hephaistos brainstorm stop`
+Review the generated tasks in .hephaistos/tasks/, then start executing.
 
 ## BACKLOG
 - Managed by project task graph / agent rules

@@ -23,7 +23,31 @@ def main():
   return 1
 
  if c.get('block_unresolved_conflicts',True) and subprocess.run(['git','diff','--name-only','--diff-filter=U'],cwd=ROOT,capture_output=True,text=True).stdout.strip(): print('[FAIL] unresolved conflicts'); return 1
- if a.git_command=='commit' and c.get('require_staged_changes_on_commit',True) and not subprocess.run(['git','diff','--cached','--name-only'],cwd=ROOT,capture_output=True,text=True).stdout.strip(): print('[FAIL] No staged changes'); return 1
+ 
+ if a.git_command=='commit' and c.get('require_staged_changes_on_commit',True):
+  staged_out = subprocess.run(['git','diff','--cached','--name-only'],cwd=ROOT,capture_output=True,text=True).stdout.strip()
+  if not staged_out: print('[FAIL] No staged changes'); return 1
+  
+  # --- HEPHAISTOS PHASE LOCKING ---
+  staged_files = staged_out.split('\n')
+  state_file = ROOT/'.hephaistos'/'state.yaml'
+  phase = 'IDLE'
+  if state_file.exists():
+   sm = re.search(r'^current_phase:\s*([A-Za-z_]+)', state_file.read_text(encoding='utf-8'), re.M)
+   if sm: phase = sm.group(1).upper()
+  
+  for f in staged_files:
+   # Les fichiers de gestion Hephaistos sont toujours autorisés à être commités
+   if f.startswith('.hephaistos/'): continue
+   # Bloquer tout code source/fichiers externes si on n'est pas en phase EXEC (tâche active)
+   if phase != 'EXEC':
+    print(f'[FAIL] Phase = {phase}. Code commits are BLOCKED.')
+    print(f'       Staged file not allowed: {f}')
+    print(f'       -> You must start a task (phase EXEC) to commit source code.')
+    print(f'       -> Run: .\\hephaistos start TXXX')
+    return 1
+  # --------------------------------
+
  for cmd in c.get('tests',{}).get(a.git_command,[]):
   print('[TEST]',cmd)
   if subprocess.run(cmd,cwd=ROOT,shell=True).returncode: print('[FAIL] test failed'); return 1

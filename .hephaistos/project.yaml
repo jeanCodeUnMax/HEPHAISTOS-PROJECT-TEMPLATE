@@ -1,5 +1,5 @@
 project:
   id: PROJECT-001
-  name: "chien-de-la-casse"
-  mission: "Développer un jeu de casse-brique cyberpunk en 3D avec Three.js et cannon-esx"
+  name: "demonstration"
+  mission: "stress-test"
   status: ACTIVE

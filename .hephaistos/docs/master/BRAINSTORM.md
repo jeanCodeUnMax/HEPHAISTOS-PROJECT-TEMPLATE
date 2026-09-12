@@ -1,0 +1,10 @@
+# BRAINSTORM
+
+## Purpose
+...
+
+## Scope
+...
+
+## Architecture
+...

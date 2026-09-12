@@ -12,7 +12,7 @@ npx --no -- commitlint --edit "$MSG_FILE"
 
 # Hephaistos Task check
 ROOT="$(git rev-parse --show-toplevel 2>/dev/null)" || exit 0
-MASTER="$ROOT/clean Garden/.hephaistos/master/PROJECT_MASTER.md"
+MASTER="$ROOT/.hephaistos/master/PROJECT_MASTER.md"
 [ -f "$MASTER" ] || exit 0
 
 TASK="$(sed -n '/^## TASK_ACTIVE$/,/^## /p' "$MASTER" | grep -Eo 'ID:[[:space:]]*T[0-9]+' | head -1 | grep -Eo 'T[0-9]+')"

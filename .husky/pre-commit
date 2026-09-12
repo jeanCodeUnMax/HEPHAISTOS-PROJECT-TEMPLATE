@@ -2,7 +2,7 @@
 cd "clean Garden"
 npx lint-staged
 ROOT="$(git rev-parse --show-toplevel 2>/dev/null)" || exit 0
-GATE="$ROOT/clean Garden/.hephaistos/scripts/watchdog/scientific_gate.py"
+GATE="$ROOT/.hephaistos/scripts/watchdog/scientific_gate.py"
 [ -f "$GATE" ] || exit 0
 python "$GATE" --git-command commit
 exit $?
