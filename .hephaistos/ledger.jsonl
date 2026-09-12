@@ -36,3 +36,5 @@
 {"ts": "2026-09-11T22:50:16.562232+00:00", "event": "BRAINSTORM_STARTED", "task": null}
 {"ts": "2026-09-12T00:04:06.431573+00:00", "event": "BRAINSTORM_STARTED", "task": null}
 {"ts": "2026-09-12T00:04:31.719597+00:00", "event": "BRAINSTORM_STOPPED", "task": null}
+{"ts": "2026-09-12T00:04:40.987073+00:00", "event": "PRD_STARTED", "task": null}
+{"ts": "2026-09-12T00:05:01.227249+00:00", "event": "PRD_STOPPED", "task": null}
