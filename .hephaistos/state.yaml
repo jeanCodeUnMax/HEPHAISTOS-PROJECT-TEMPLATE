@@ -1,4 +1,4 @@
 active_task: null
 active_milestone: null
-last_transition: brainstorm_started
-current_phase: BRAINSTORM
+last_transition: brainstorm_completed
+current_phase: IDLE
