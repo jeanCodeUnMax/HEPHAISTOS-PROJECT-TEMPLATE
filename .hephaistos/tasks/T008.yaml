@@ -1,0 +1,8 @@
+id: T008
+title: Crash Test - Script Ping
+type: feature
+status: ACTIVE
+dependencies: []
+depends_on_skill: [implementation]
+checks:
+  - 'ping.py existe et fonctionne'
