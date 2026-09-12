@@ -1,7 +1,7 @@
 id: T008
 title: Crash Test - Script Ping
 type: feature
-status: ACTIVE
+status: DONE
 dependencies: []
 depends_on_skill: [implementation]
 checks:

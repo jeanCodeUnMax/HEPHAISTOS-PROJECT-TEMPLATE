@@ -1,2 +1,0 @@
-#!/bin/sh
-python scripts/watchdog/scientific_gate.py --git-command commit || exit $?

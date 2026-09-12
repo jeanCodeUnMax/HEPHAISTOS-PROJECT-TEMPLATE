@@ -1,7 +1,7 @@
 id: T009
 title: Crash Test - Recherche Scientifique (Ping Performance)
 type: experiment
-status: ACTIVE
+status: DONE
 dependencies: [T008]
 depends_on_skill: [scientific-experiment]
 checks:

@@ -46,6 +46,27 @@ def main():
     print(f'       -> You must start a task (phase EXEC) to commit source code.')
     print(f'       -> Run: .\\hephaistos start TXXX')
     return 1
+  
+  # Scientific Output Verification
+  if phase == 'EXEC':
+   active_task_match = re.search(r'^active_task:\s*(T\d+)', state_file.read_text(encoding='utf-8'), re.M) if state_file.exists() else None
+   if active_task_match:
+    t_id = active_task_match.group(1)
+    task_file = ROOT/'.hephaistos'/'tasks'/f'{t_id}.yaml'
+    if task_file.exists():
+     task_content = task_file.read_text(encoding='utf-8')
+     if 'type: experiment' in task_content or 'scientific-experiment' in task_content:
+      # Check if deliverables exist in staged files OR in the repo
+      expected = [f'{t_id}_academic_paper.md', f'{t_id}_full_analysis.md', f'{t_id}_process_manual.md', f'{t_id}_commercial_benchmark.md']
+      missing = []
+      for exp in expected:
+       if not any(f.endswith(exp) for f in staged_files) and not (ROOT/exp).exists():
+        missing.append(exp)
+      if missing:
+       print(f'[FAIL] SCIENTIFIC PROTOCOL VIOLATION for {t_id}')
+       print(f'       Missing required deliverables: {", ".join(missing)}')
+       print(f'       You must generate these reports before committing.')
+       return 1
   # --------------------------------
 
  for cmd in c.get('tests',{}).get(a.git_command,[]):

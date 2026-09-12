@@ -1,4 +1,0 @@
-Physics and input modules loaded successfully.
-Paddle moves with arrow keys.
-Ball launches on spacebar.
-No JavaScript errors.

@@ -3,7 +3,12 @@ title: Example task
 milestone: M01
 objective: Replace this example with a real, independently verifiable outcome.
 status: PENDING
+dependencies: []
+depends_on_skill: [] # e.g. [Frontend, DevOps]
 requires: []
+assigned_to: ""
+authored_by: ""
+decision_log: ""
 subtasks:
   - Define one concrete execution step
 checks:

@@ -1,5 +1,5 @@
 from pathlib import Path
-import argparse, re, json, datetime
+import argparse, re, json, datetime, subprocess
 ROOT=Path(__file__).resolve().parents[3]; H=ROOT/'.hephaistos'; TD=H/'tasks'; PROJ=H/'project.yaml'; STATE=H/'state.yaml'; LEDGER=H/'ledger.jsonl'; MASTER=H/'master/PROJECT_MASTER.md'
 def field(txt,k,d=''):
  m=re.search(rf'^\s*{re.escape(k)}:\s*(.*?)\s*$',txt,re.M); return m.group(1).strip().strip('"\'') if m else d
@@ -13,7 +13,10 @@ def parse(p):
  t=p.read_text(encoding='utf-8'); rb=re.search(r'^requires:\s*(.*?)(?=^[A-Za-z_]+:|\Z)',t,re.M|re.S); req=[]
  if rb:
   x=rb.group(1).strip(); req=[i.strip() for i in x.strip('[]').split(',') if i.strip()] if x.startswith('[') else re.findall(r'^\s*-\s*(T\d+)\s*$',rb.group(1),re.M)
- nxt=field(t,'next','NONE'); return {'path':p,'id':field(t,'id',p.stem),'title':field(t,'title',''),'status':field(t,'status','PENDING').upper(),'requires':req,'checks':re.findall(r'^\s*- path:\s*(.+)$',t,re.M),'next':None if nxt.upper() in ('NONE','NULL','-','') else nxt}
+ sb=re.search(r'^depends_on_skill:\s*(.*?)(?=^[A-Za-z_]+:|\Z)',t,re.M|re.S); skills=[]
+ if sb:
+  y=sb.group(1).strip(); skills=[i.strip() for i in y.strip('[]').split(',') if i.strip()] if y.startswith('[') else re.findall(r'^\s*-\s*(.+?)\s*$',sb.group(1),re.M)
+ nxt=field(t,'next','NONE'); return {'path':p,'id':field(t,'id',p.stem),'title':field(t,'title',''),'status':field(t,'status','PENDING').upper(),'requires':req,'skills':skills,'checks':re.findall(r'^\s*- path:\s*(.+)$',t,re.M),'next':None if nxt.upper() in ('NONE','NULL','-','') else nxt}
 def tasks(): return {x['id']:x for x in (parse(p) for p in sorted(TD.glob('T*.yaml')))}
 def active(a):
   x=[t for t in a.values() if t['status']=='ACTIVE'];
@@ -56,14 +59,22 @@ def start(args):
  req_init(); a=tasks(); t=resolve(args.task,a); ac=active(a); b=bad(t,a)
  if b: raise SystemExit(f"[!] ORDER VIOLATION — {t['id']} blocked by: {', '.join(b)}")
  if ac and ac['id']!=t['id']: raise SystemExit(f"[!] ORDER VIOLATION — {ac['id']} is ACTIVE")
+ try: subprocess.run(['git', 'checkout', '-B', f'task/{t["id"]}'], check=False)
+ except: print('[!] Could not checkout branch')
  save(t,'ACTIVE'); STATE.write_text(f"active_task: {t['id']}\nactive_milestone: null\nlast_transition: task_started\ncurrent_phase: EXEC\n",encoding='utf-8'); sync(t['id'],t['title'],f"Execute {t['id']} and satisfy its evidence checks."); log('TASK_STARTED',t['id']); print(f"-> {t['id']} ACTIVE (Phase: EXEC)")
 def finish(args):
  req_init(); a=tasks(); t=resolve(args.task,a); ac=active(a)
  if not ac or ac['id']!=t['id']: raise SystemExit(f"⛔ ORDER VIOLATION — requested {t['id']}, ACTIVE is {ac['id'] if ac else 'none'}")
  if check(argparse.Namespace(task=t['id'])): return 1
  save(t,'DONE'); log('TASK_DONE',t['id']); a=tasks(); n=t['next']
- if n and n in a and not bad(a[n],a): save(a[n],'ACTIVE'); STATE.write_text(f'active_task: {n}\nactive_milestone: null\nlast_transition: task_advanced\ncurrent_phase: EXEC\n',encoding='utf-8'); sync(n,a[n]['title'],f'Execute {n}.'); print(f'\n[PASS] {t["id"]} DONE\n-> {n} ACTIVE')
- else: STATE.write_text('active_task: null\nactive_milestone: null\nlast_transition: task_completed\ncurrent_phase: IDLE\n',encoding='utf-8'); sync(nxt='Review roadmap and activate the next admissible task.'); print(f'\n[PASS] {t["id"]} DONE (Phase: IDLE)')
+ STATE.write_text('active_task: null\nactive_milestone: null\nlast_transition: task_completed\ncurrent_phase: IDLE\n',encoding='utf-8')
+ if n and n in a and not bad(a[n],a):
+  sk = ', '.join(a[n]['skills']) if a[n]['skills'] else 'Aucune spécifique'
+  sync(nxt=f"Task {n} is ready. Required skills: {sk}. Awaiting competent agent.")
+  print(f'\n[PASS] {t["id"]} DONE (Phase: IDLE)\n-> Tâche suivante recommandée : {n}\n-> Compétences requises : {sk}\n-> En attente d\'un agent (Pull Model). Tapez `hephaistos start {n}` pour la prendre.')
+ else:
+  sync(nxt='Review roadmap and activate the next admissible task.')
+  print(f'\n[PASS] {t["id"]} DONE (Phase: IDLE)')
 def brainstorm(args):
  req_init(); b=MASTER.parent/'BRAINSTORM.md'
  if args.action == 'start':
@@ -88,9 +99,41 @@ def plan(args):
   STATE.write_text('active_task: null\nactive_milestone: null\nlast_transition: plan_started\ncurrent_phase: PLAN\n',encoding='utf-8'); sync(nxt='Ask your AI agent to split the PRD into task YAML files, then run `.\\hephaistos plan stop`.'); log('PLANNING_STARTED'); print('[PASS] Ready for task planning. Phase is now PLAN (Only YAML and MD files allowed).')
  else:
   STATE.write_text('active_task: null\nactive_milestone: null\nlast_transition: plan_completed\ncurrent_phase: IDLE\n',encoding='utf-8'); sync(nxt='Run `.\\hephaistos start Txxx` to execute a task.'); log('PLANNING_STOPPED'); print('[PASS] PLAN complete. Phase is now IDLE.')
+def help_cli(_):
+ print('''\n=== HEPHAISTOS CLI - GUIDE D'UTILISATION ===
+Ce CLI orchestre les phases du projet et bloque les commits non-autorisés.
+
+1. INITIALISATION
+   .\\hephaistos init --name "Nom" --mission "Description"
+   (Initialise le projet, crée les dossiers .hephaistos)
+
+2. PHASES DE CONCEPTION (Bloquent les commits de code)
+   .\\hephaistos brainstorm start  -> Ouvre BRAINSTORM.md
+   .\\hephaistos brainstorm stop
+   .\\hephaistos prd start         -> Ouvre PRD.md
+   .\\hephaistos prd stop
+   .\\hephaistos plan start        -> Phase de découpage YAML (T001.yaml)
+   .\\hephaistos plan stop
+
+3. EXÉCUTION (Permet les commits)
+   .\\hephaistos tasks             -> Liste toutes les tâches YAML
+   .\\hephaistos start T001        -> Démarre l'exécution de T001
+   .\\hephaistos check T001        -> Vérifie si l'évidence de T001 existe
+   .\\hephaistos finish T001       -> Valide T001 et passe à la suivante
+   .\\hephaistos status T001       -> Affiche l'état d'une tâche
+
+Exemple de cycle complet :
+1. .\\hephaistos brainstorm start (puis stop)
+2. .\\hephaistos prd start (puis stop)
+3. .\\hephaistos plan start (Création des YAML) puis stop
+4. .\\hephaistos start T001 (Le code est écrit et commité)
+5. .\\hephaistos finish T001
+============================================\n''')
+
 def main():
  p=argparse.ArgumentParser(prog='hephaistos'); s=p.add_subparsers(dest='cmd',required=True); q=s.add_parser('init'); q.add_argument('--name',required=True); q.add_argument('--mission',required=True); q.add_argument('--id'); q.add_argument('--force',action='store_true'); s.add_parser('tasks')
  for n in ['brainstorm','prd','plan']: q=s.add_parser(n); q.add_argument('action', choices=['start', 'stop'], nargs='?', default='start'); q.add_argument('--force',action='store_true')
  for n in ['status','check','start','finish']: q=s.add_parser(n); q.add_argument('task',nargs='?')
- a=p.parse_args(); return {'init':init,'tasks':list_tasks,'status':status,'check':check,'start':start,'finish':finish,'brainstorm':brainstorm,'prd':prd,'plan':plan}[a.cmd](a) or 0
+ s.add_parser('help')
+ a=p.parse_args(); return {'init':init,'tasks':list_tasks,'status':status,'check':check,'start':start,'finish':finish,'brainstorm':brainstorm,'prd':prd,'plan':plan,'help':help_cli}[a.cmd](a) or 0
 if __name__=='__main__': raise SystemExit(main())

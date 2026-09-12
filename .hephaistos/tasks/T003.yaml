@@ -1,6 +1,6 @@
 id: T003
 title: "Arkanoid v1.1 - Power-ups et Bugfix"
-status: "TODO"
+status: DONE
 description: "Correction de la collision de la balle sur la raquette et ajout d'un système de power-ups (Loot, Canon, Nuit, Vitesse)."
 files_to_modify:
   - "game.js"

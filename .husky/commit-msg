@@ -18,6 +18,28 @@ MASTER="$ROOT/.hephaistos/master/PROJECT_MASTER.md"
 TASK="$(sed -n '/^## TASK_ACTIVE$/,/^## /p' "$MASTER" | grep -Eo 'ID:[[:space:]]*T[0-9]+' | head -1 | grep -Eo 'T[0-9]+')"
 [ -z "$TASK" ] && exit 0
 
+# Check for structural changes
+STAGED_FILES=$(git diff --cached --name-only)
+STRUCTURAL_CHANGE=0
+for f in $STAGED_FILES; do
+  if echo "$f" | grep -Eq "^.agent/|^.hephaistos/scripts/|^.hephaistos/schemas/|^.husky/"; then
+    STRUCTURAL_CHANGE=1
+    break
+  fi
+done
+
+if [ "$STRUCTURAL_CHANGE" -eq 1 ]; then
+  if ! grep -q "\[HUMAN-APPROVED\]" "$MSG_FILE"; then
+    echo ""
+    echo "⛔ CORE ARCHITECTURE MODIFICATION DETECTED"
+    echo "You are attempting to modify files in .agent/ or .hephaistos/ schemas/scripts."
+    echo "These files are locked to prevent AI corruption."
+    echo "To proceed, you (the human) must add [HUMAN-APPROVED] to your commit message."
+    echo ""
+    exit 1
+  fi
+fi
+
 if ! grep -Eiq "(^|[^A-Za-z0-9])$TASK([^A-Za-z0-9]|$)" "$MSG_FILE"; then
   echo ""
   echo "⛔ HEPHAISTOS WATCHDOG: commit message blocked"

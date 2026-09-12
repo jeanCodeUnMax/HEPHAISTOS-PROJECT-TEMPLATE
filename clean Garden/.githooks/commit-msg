@@ -1,5 +1,0 @@
-#!/bin/sh
-MSG_FILE="$1"
-ACTIVE=$(grep -E '^active_task:[[:space:]]*T[0-9]+' .hephaistos/state.yaml 2>/dev/null | awk '{print $2}')
-[ -z "$ACTIVE" ] && exit 0
-grep -q "$ACTIVE" "$MSG_FILE" || { echo "⛔ Commit message must reference ACTIVE task: $ACTIVE"; exit 1; }

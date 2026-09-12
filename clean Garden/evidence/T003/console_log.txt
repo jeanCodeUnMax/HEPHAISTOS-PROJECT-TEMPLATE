@@ -1,6 +1,0 @@
-Scoring and brick destruction modules loaded successfully.
-Bricks arranged in grid.
-Ball collides with bricks and they disappear.
-Score increments correctly.
-Win condition triggered when all bricks destroyed.
-No JavaScript errors.
