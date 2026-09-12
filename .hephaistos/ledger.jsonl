@@ -40,3 +40,8 @@
 {"ts": "2026-09-12T00:05:01.227249+00:00", "event": "PRD_STOPPED", "task": null}
 {"ts": "2026-09-12T00:05:06.080113+00:00", "event": "PLANNING_STARTED", "task": null}
 {"ts": "2026-09-12T00:05:26.376844+00:00", "event": "PLANNING_STOPPED", "task": null}
+{"ts": "2026-09-12T00:05:31.644986+00:00", "event": "TASK_STARTED", "task": "T002"}
+{"ts": "2026-09-12T00:06:23.994099+00:00", "event": "CHECK_PASSED", "task": "T002"}
+{"ts": "2026-09-12T00:06:23.994930+00:00", "event": "TASK_DONE", "task": "T002"}
+{"ts": "2026-09-12T00:15:24.433915+00:00", "event": "PLANNING_STARTED", "task": null}
+{"ts": "2026-09-12T00:15:35.833105+00:00", "event": "PLANNING_STOPPED", "task": null}

@@ -1,6 +1,6 @@
 id: T002
 title: "Développement Arkanoid Cyberpunk"
-status: "TODO"
+status: DONE
 description: "Implémentation complète du jeu Arkanoid avec esthétique Cyberpunk selon le PRD."
 files_to_modify:
   - "index.html"
