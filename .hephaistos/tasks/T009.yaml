@@ -1,0 +1,8 @@
+id: T009
+title: Crash Test - Recherche Scientifique (Ping Performance)
+type: experiment
+status: ACTIVE
+dependencies: [T008]
+depends_on_skill: [scientific-experiment]
+checks:
+  - 'Le rapport scientifique markdown a été généré'
