@@ -1,36 +1,14 @@
 id: T002
-title: Implement paddle controls and ball physics
-milestone: M01
-objective: Implement player-controllable paddle and physics-based ball that bounces off walls and paddle correctly.
-status: DONE
-depends_on:
-  - T001
-subtasks:
-  - Create paddle mesh (thin box) and add to scene
-  - Create ball mesh (sphere) and add to scene
-  - Set up cannon-esx world and add paddle (kinematic) and ball (dynamic) bodies
-  - Implement keyboard input handling (ArrowLeft/ArrowRight for paddle movement)
-  - Synchronize Three.js mesh positions with physics body positions each frame
-  - Set up collision detection between ball and paddle/walls
-  - Implement ball launch on spacebar press
-  - Add basic boundaries (walls, floor) to prevent objects from escaping
-inputs:
-  - src/main.js (from T001)
-  - index.html
-outputs:
-  - src/main.js (updated with paddle, ball, physics)
-  - src/physics.js (new module for physics world)
-  - src/input.js (new module for input handling)
-checks:
-  - path: evidence/T002/paddle_move.gif
-  - path: evidence/T002/ball_bounce_wall.gif
-  - path: evidence/T002/ball_bounce_paddle.gif
-  - path: evidence/T002/console_log.txt
-done_when:
-  - Paddle responds to ArrowLeft/ArrowRight keys with smooth movement
-  - Ball launches on spacebar press and follows predictable trajectory
-  - Ball bounces off left/right walls and top wall with correct reflection
-  - Ball bounces off paddle with angle dependent on point of impact
-  - Ball falls below paddle when not intercepted (triggers game over state)
-  - No JavaScript errors in console during gameplay
-next: T003
+title: "Développement Arkanoid Cyberpunk"
+status: "TODO"
+description: "Implémentation complète du jeu Arkanoid avec esthétique Cyberpunk selon le PRD."
+files_to_modify:
+  - "index.html"
+  - "style.css"
+  - "game.js"
+acceptance_criteria:
+  - "Raquette déplaçable avec la souris"
+  - "Balle avec physique de rebond"
+  - "Destruction des briques"
+  - "Victoire et Défaite fonctionnelles"
+  - "Esthétique Néon / Cyberpunk"

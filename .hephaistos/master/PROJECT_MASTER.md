@@ -23,7 +23,7 @@ Defined by PRD/task evidence rules.
 No conclusion recorded yet.
 
 ## NEXT_ACTION
-Run `.\hephaistos plan start` to proceed.
+Run `.\hephaistos start Txxx` to execute a task.
 
 ## BACKLOG
 - Managed by project task graph / agent rules
