@@ -1,6 +1,6 @@
 {
   "enabled": true,
-  "master_file": "docs/master/PROJECT_MASTER.md",
+  "master_file": ".hephaistos/master/PROJECT_MASTER.md",
   "require_initialized_project": true,
   "required_sections": [
     "MISSION",
