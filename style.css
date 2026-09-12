@@ -60,3 +60,14 @@ canvas {
     80% { transform: translate(-50%, -48%) skew(5deg); }
     100% { transform: translate(-50%, -50%) skew(0deg); }
 }
+
+/* Night Mode Powerup */
+body.night-mode {
+    background-color: #000;
+}
+body.night-mode #game-container {
+    box-shadow: 0 0 2px #0ff;
+}
+canvas.night-mode {
+    background: #000;
+}
